@@ -1,0 +1,7 @@
+{
+  "profiles": {
+    "WpfDotNet6WithFeatureFlags": {
+      "commandName": "Project"
+    }
+  }
+}
