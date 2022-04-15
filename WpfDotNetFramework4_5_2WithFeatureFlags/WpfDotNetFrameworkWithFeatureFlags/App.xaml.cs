@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
+using WpfDotNetFrameworkWithFeatureFlags.FeatureManagement;
 
 namespace WpfDotNetFrameworkWithFeatureFlags
 {
@@ -8,15 +10,44 @@ namespace WpfDotNetFrameworkWithFeatureFlags
     /// </summary>
     public partial class App : Application
     {
+        private Host host = new Host();
+
         public App()
         {
-            // load configuration from appsettings.json file
-            IConfigurationRoot config = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: false)
-                .Build();
+            // add services to container
+            ServiceCollection services = new ServiceCollection();
+            services
+                .AddSingleton(new ConfigurationFromJson("appsettings.json").Build())
+                .AddFeatureManagement();
+            
+            services.AddSingleton<MainWindow>();
 
-            var title = config["Position:Title"];
-            var name = config["Position:Name"];
+            host.Services = services.BuildServiceProvider();
         }
+
+        private void Application_Startup(object sender, StartupEventArgs e)
+        {
+            host.Services.GetService<MainWindow>()?.Show();
+        }
+
+        private void Application_Exit(object sender, ExitEventArgs e)
+        {
+        }
+    }
+
+    /// <summary>
+    /// Load configuration from a JSON file 
+    /// </summary>
+    public class ConfigurationFromJson
+    {
+        private readonly string path;
+
+        public ConfigurationFromJson(string path) => 
+            this.path = path;
+
+        public IConfiguration Build() =>
+            new ConfigurationBuilder()
+                .AddJsonFile(path, optional: true, reloadOnChange: false)
+                .Build();
     }
 }

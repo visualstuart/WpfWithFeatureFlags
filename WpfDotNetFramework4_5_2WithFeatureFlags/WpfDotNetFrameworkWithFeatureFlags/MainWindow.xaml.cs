@@ -1,17 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+﻿using System.Windows;
+using WpfDotNetFrameworkWithFeatureFlags.FeatureManagement;
 
 namespace WpfDotNetFrameworkWithFeatureFlags
 {
@@ -20,9 +8,21 @@ namespace WpfDotNetFrameworkWithFeatureFlags
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow()
+        public Visibility FeatureAVisibility { get; set; }
+        public Visibility FeatureBVisibility { get; set; }
+        public Visibility FeatureCVisibility { get; set; }
+
+        public MainWindow(IFeatureManager featureManager)
         {
+            FeatureAVisibility = ConvertToVisibility(featureManager.IsEnabled("FeatureA"));
+            FeatureBVisibility = ConvertToVisibility(featureManager.IsEnabled("FeatureB"));
+            FeatureCVisibility = ConvertToVisibility(featureManager.IsEnabled("FeatureC"));
+
             InitializeComponent();
+            DataContext = this;
         }
+
+        private static Visibility ConvertToVisibility(bool isFeatureEnabled) =>
+            isFeatureEnabled ? Visibility.Visible : Visibility.Hidden;
     }
 }
