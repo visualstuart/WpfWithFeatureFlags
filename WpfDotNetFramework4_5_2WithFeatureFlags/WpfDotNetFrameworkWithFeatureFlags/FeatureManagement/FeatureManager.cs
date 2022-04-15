@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using System;
 
 namespace WpfDotNetFrameworkWithFeatureFlags.FeatureManagement
 {
@@ -18,7 +19,22 @@ namespace WpfDotNetFrameworkWithFeatureFlags.FeatureManagement
             section = configuration.GetSection(SectionName);
         }
 
-        public bool IsEnabled(string feature) =>
-            bool.TryParse(section[feature], out bool enabled) && enabled;
+        public bool IsEnabled(object feature)
+        {
+            var name = GetFeatureName(feature);
+            return bool.TryParse(section[name], out bool enabled) && enabled;
+        }
+
+        private static string GetFeatureName(object feature)
+        {
+            var featureType = feature.GetType();
+            if (!featureType.IsEnum)
+            {
+                throw new ArgumentException($"{nameof(feature)} must be an enum.");
+            }
+
+            return Enum.GetName(featureType, feature);
+        }
+
     }
 }

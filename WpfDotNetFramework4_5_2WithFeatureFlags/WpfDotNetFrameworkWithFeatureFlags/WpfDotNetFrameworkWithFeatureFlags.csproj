@@ -100,11 +100,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ConfigurationFromJson.cs" />
+    <Compile Include="FeatureFlags.cs" />
     <Compile Include="FeatureManagement\FeatureManager.cs" />
     <Compile Include="FeatureManagement\FeatureManagementBuilder.cs" />
     <Compile Include="FeatureManagement\IFeatureManagementBuilder.cs" />
     <Compile Include="FeatureManagement\IFeatureManager.cs" />
-    <Compile Include="FeatureManagement\ServiceCollectionExtensions.cs" />
+    <Compile Include="ServiceCollectionExtensions.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

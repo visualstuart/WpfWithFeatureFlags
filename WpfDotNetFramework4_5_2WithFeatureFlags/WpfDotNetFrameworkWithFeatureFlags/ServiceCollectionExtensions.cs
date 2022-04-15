@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using WpfDotNetFrameworkWithFeatureFlags.FeatureManagement;
 
 namespace WpfDotNetFrameworkWithFeatureFlags
 {
@@ -19,7 +20,9 @@ namespace WpfDotNetFrameworkWithFeatureFlags
 
         public static IServiceCollection AddConfigurationFromJson(this IServiceCollection services, string path)
         {
+            services.AddSingleton(new ConfigurationFromJson("appsettings.json").Build());
             return services;
         }
+
     }
 }

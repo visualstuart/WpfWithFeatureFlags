@@ -2,6 +2,6 @@
 {
     public interface IFeatureManager
     {
-        bool IsEnabled(string feature);
+        bool IsEnabled(object feature);
     }
 }

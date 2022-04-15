@@ -14,15 +14,15 @@ namespace WpfDotNetFrameworkWithFeatureFlags
 
         public MainWindow(IFeatureManager featureManager)
         {
-            FeatureAVisibility = ConvertToVisibility(featureManager.IsEnabled("FeatureA"));
-            FeatureBVisibility = ConvertToVisibility(featureManager.IsEnabled("FeatureB"));
-            FeatureCVisibility = ConvertToVisibility(featureManager.IsEnabled("FeatureC"));
+            FeatureAVisibility = VisibilityFrom(featureManager.IsEnabled(FeatureFlags.FeatureA));
+            FeatureBVisibility = VisibilityFrom(featureManager.IsEnabled(FeatureFlags.FeatureB));
+            FeatureCVisibility = VisibilityFrom(featureManager.IsEnabled(FeatureFlags.FeatureC));
 
             InitializeComponent();
             DataContext = this;
         }
 
-        private static Visibility ConvertToVisibility(bool isFeatureEnabled) =>
+        private static Visibility VisibilityFrom(bool isFeatureEnabled) =>
             isFeatureEnabled ? Visibility.Visible : Visibility.Hidden;
     }
 }

@@ -1,7 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
-using WpfDotNetFrameworkWithFeatureFlags.FeatureManagement;
 
 namespace WpfDotNetFrameworkWithFeatureFlags
 {
@@ -17,7 +15,7 @@ namespace WpfDotNetFrameworkWithFeatureFlags
             // add services to container
             ServiceCollection services = new ServiceCollection();
             services
-                .AddSingleton(new ConfigurationFromJson("appsettings.json").Build())
+                .AddConfigurationFromJson("appsettings.json")
                 .AddFeatureManagement();
             
             services.AddSingleton<MainWindow>();
@@ -33,21 +31,5 @@ namespace WpfDotNetFrameworkWithFeatureFlags
         private void Application_Exit(object sender, ExitEventArgs e)
         {
         }
-    }
-
-    /// <summary>
-    /// Load configuration from a JSON file 
-    /// </summary>
-    public class ConfigurationFromJson
-    {
-        private readonly string path;
-
-        public ConfigurationFromJson(string path) => 
-            this.path = path;
-
-        public IConfiguration Build() =>
-            new ConfigurationBuilder()
-                .AddJsonFile(path, optional: true, reloadOnChange: false)
-                .Build();
     }
 }
