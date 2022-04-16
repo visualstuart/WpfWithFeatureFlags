@@ -8,8 +8,10 @@
         Title="MainWindow" Height="450" Width="800">
     <Grid>
     
-        <StackPanel Visibility="{Binding Path=FeatureXVisibility}">
-            <Button Click="button_Click">Start Feature X</Button>
+        <StackPanel >
+            <TextBlock Visibility="{Binding Path=FeatureAVisibility}">Feature A</TextBlock>
+            <TextBlock Visibility="{Binding Path=FeatureBVisibility}">Feature B</TextBlock>
+            <TextBlock Visibility="{Binding Path=FeatureCVisibility}">Feature C</TextBlock>
         </StackPanel>
 
     </Grid>

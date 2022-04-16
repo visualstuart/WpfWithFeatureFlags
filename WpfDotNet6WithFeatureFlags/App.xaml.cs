@@ -3,7 +3,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.FeatureManagement;
 using System;
-using System.Reflection;
 using System.Windows;
 
 namespace WpfDotNet6WithFeatureFlags

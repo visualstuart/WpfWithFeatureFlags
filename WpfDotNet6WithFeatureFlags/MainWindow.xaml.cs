@@ -10,19 +10,26 @@ namespace WpfDotNet6WithFeatureFlags
     {
         private readonly IFeatureManager featureManager;
 
-        public Visibility FeatureXVisibility { get; set; }
+        public Visibility FeatureAVisibility { get; set; }
+        public Visibility FeatureBVisibility { get; set; }
+        public Visibility FeatureCVisibility { get; set; }
 
+        /// <summary>
+        /// Instantiate a MainWindow object.
+        /// </summary>
+        /// <param name="featureManager">The IFeatureManager injected dependency.</param>
         public MainWindow(IFeatureManager featureManager)
         {
             this.featureManager = featureManager;
-            FeatureXVisibility = VisibilityFrom(featureManager.IsEnabledAsync("FeatureX").Result);
+            FeatureAVisibility =
+                VisibilityFrom(featureManager.IsEnabledAsync(FeatureFlags.FeatureA).Result);
+            FeatureBVisibility =
+                VisibilityFrom(featureManager.IsEnabledAsync(FeatureFlags.FeatureB).Result);
+            FeatureCVisibility =
+                VisibilityFrom(featureManager.IsEnabledAsync(FeatureFlags.FeatureC).Result);
 
             InitializeComponent();
             DataContext = this;
-        }
-
-        private void button_Click(object sender, RoutedEventArgs e)
-        {
         }
 
         private static Visibility VisibilityFrom(bool isFeatureEnabled) =>
