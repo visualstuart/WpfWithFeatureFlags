@@ -12,10 +12,10 @@ namespace WpfDotNet6WithFeatureFlags
 
         public Visibility FeatureXVisibility { get; set; }
 
-        public MainWindow(IFeatureManagerSnapshot featureManager)
+        public MainWindow(IFeatureManager featureManager)
         {
             this.featureManager = featureManager;
-            FeatureXVisibility = ConvertToVisibility(featureManager.IsEnabledAsync("FeatureX").Result); 
+            FeatureXVisibility = VisibilityFrom(featureManager.IsEnabledAsync("FeatureX").Result);
 
             InitializeComponent();
             DataContext = this;
@@ -25,7 +25,7 @@ namespace WpfDotNet6WithFeatureFlags
         {
         }
 
-        private static Visibility ConvertToVisibility(bool isFeatureEnabled) =>
+        private static Visibility VisibilityFrom(bool isFeatureEnabled) =>
             isFeatureEnabled ? Visibility.Visible : Visibility.Hidden;
     }
 }
