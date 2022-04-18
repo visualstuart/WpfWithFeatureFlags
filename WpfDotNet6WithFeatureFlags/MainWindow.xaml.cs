@@ -10,6 +10,7 @@ namespace WpfDotNet6WithFeatureFlags
     {
         private readonly IFeatureManager featureManager;
 
+        // public properties which are exposed in the data context
         public Visibility FeatureAVisibility { get; set; }
         public Visibility FeatureBVisibility { get; set; }
         public Visibility FeatureCVisibility { get; set; }
@@ -17,7 +18,7 @@ namespace WpfDotNet6WithFeatureFlags
         /// <summary>
         /// Instantiate a MainWindow object.
         /// </summary>
-        /// <param name="featureManager">The IFeatureManager injected dependency.</param>
+        /// <param name="featureManager">The feature manager.</param>
         public MainWindow(IFeatureManager featureManager)
         {
             this.featureManager = featureManager;

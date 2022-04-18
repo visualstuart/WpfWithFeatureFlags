@@ -20,7 +20,7 @@ namespace WpfDotNetFrameworkWithFeatureFlags
 
         public static IServiceCollection AddConfigurationFromJson(this IServiceCollection services, string path)
         {
-            services.AddSingleton(new ConfigurationFromJson("appsettings.json").Build());
+            services.AddSingleton(new ConfigurationFromJson(path).Build());
             return services;
         }
 

@@ -301,6 +301,61 @@ however the details appear to have become shrouded in the mists of time.
 If you are working with an earlier version of WPF or .NET Framework,
 then your experiences may be different.
 
+As a reminder, one objective of this sample is to provide a programming model for
+a WPF application that targets .NET Framework that is fairly close to the 
+programming model used in a modern WPF .NET application.
+Additionally, we'd like to have that without trying to recreate a lot of the .NET (Core)
+capabilities from scratch.
+
+The strategy is to use some of the early Microsoft NuGet packages for .NET (Core)
+that are compatible with either .NET Framework 4.5.2 or 
+with .NET Standard 1.2 which, in turn, is compatible with .NET Framework 4.5.2.
+
+**Note.** It must be understood from the outset that as early NuGet packages,
+they do not have the full feature set of the latest packages, may have different APIs,
+and may have bug, performance issues, and other limitations addressed in later versions of the packages.
+Therefore we strive to keep the use of these packages light and unsophisticated.
+
+## Setting up the WPF (.NET Framework) application to use feature flags
+
+As in the WPF .NET sample, add `Startup` and `Exit` properties to the `<Application>` element in the
+`App.xaml`
+
+````xml
+<Application xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             ...
+             Startup="Application_Startup"
+             Exit="Application_Exit">
+````
+
+and add the methods named in these XAML attributes, along with a default constructor, in the code-behind, as shown.
+
+````cs
+public partial class App : Application
+{
+    public App()
+    {
+    }
+
+    private void Application_Startup(object sender, StartupEventArgs e)
+    {
+    }
+
+    private void Application_Exit(object sender, ExitEventArgs e)
+    {
+    }
+}
+````
+
+Next, use the NuGet Package Manager to add these packages to the project's References. 
+**Use the exact package versions specified in parentheses** as these are the last
+versions of these packages compatible with .NET Framework 4.2.5.
+If you try to upgrade the packages, they should fail with a message that they are
+not compatible with the target framework.
+
+* Microsoft.Extensions.Configuration (1.1.2)
+* Microsoft.Extensions.Configuration.Json (1.1.2)
+* Microsoft.Extensions.DependencyInjection (1.1.1)
 
 
 # References
