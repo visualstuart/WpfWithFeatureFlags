@@ -350,13 +350,110 @@ public partial class App : Application
 Next, use the NuGet Package Manager to add these packages to the project's References. 
 **Use the exact package versions specified in parentheses** as these are the last
 versions of these packages compatible with .NET Framework 4.2.5.
-If you try to upgrade the packages, they should fail with a message that they are
+If you try to upgrade the packages, the upgrade should fail with a message that they are
 not compatible with the target framework.
 
 * Microsoft.Extensions.Configuration (1.1.2)
 * Microsoft.Extensions.Configuration.Json (1.1.2)
 * Microsoft.Extensions.DependencyInjection (1.1.1)
 
+Next, we're adding some small classes to help bridge some gaps between the available Microsoft.Extensions packages
+and what we need to get feature flags working.
+
+I've created a `Host` class to act like the .NET Generic Host, in this example all it does is
+aggregate an `IServiceProvider`:
+
+````cs
+public class Host
+{
+    public IServiceProvider Services { get; set; }
+}
+````
+
+Inspect the four replacement types for feature management `FeatureManagement` namespace (folder).
+
+The `IFeatureManager` defines a single method, `IsEnabled`, with a parameter type of `object`.
+The implementation will restrict this object to being a member of an enum; 
+there is no way to express that in static typing in C#.
+The purpose of using a enum member instead of a string is to base the feature flag usage on
+a programmatic type instead of an arbitrary string, making it easier to audit for use and
+prevent errors due to typos.
+
+The `FeatureManager` class implements the `IFeatureManager` interface and gets the
+application configuration using dependency injection.
+The implementation looks up the feature name (which must be an enum member) in the "FeatureManagement" 
+section of the configuration.
+
+The `IFeatureManagerBuilder` interface and its corresponding `FeatureManagerBuilder` class are both empty.
+Their only purpose is to keep the signature of the `AddFeatureManagement` extension method
+on IServiceCollection identical to the one found in `Microsoft.FeatureManagement` NuGet packages.
+
+And I've added a `ServiceCollectionExtensions` class with extension methods to the IServiceCollection:
+
+````cs
+public static class ServiceCollectionExtensions
+{
+    /// <summary>
+    /// Adds required feature management services.
+    /// </summary>
+    /// <param name="services">The service collection that feature management services are added to.</param>
+    /// <returns>A <see cref="IFeatureManagementBuilder"/> that can be used to customize feature management functionality.</returns>
+    public static IFeatureManagementBuilder AddFeatureManagement(this IServiceCollection services)
+    {
+        // Add required services
+        services.AddSingleton<IFeatureManager, FeatureManager>();
+
+        return new FeatureManagementBuilder(services);
+    }
+
+    public static IServiceCollection AddConfigurationFromJson(this IServiceCollection services, string path)
+    {
+        services.AddSingleton(new ConfigurationFromJson(path).Build());
+        return services;
+    }
+}
+````
+
+With this in place, the implementation of the `App` constructor follows the same structure as before, albeit simplified.
+
+````cs
+public partial class App : Application
+{
+    private Host host = new Host();
+
+    public App()
+    {
+        // add services to container
+        ServiceCollection services = new ServiceCollection();
+        services
+            .AddConfigurationFromJson("appsettings.json")
+            .AddFeatureManagement();
+            
+        services.AddSingleton<MainWindow>();
+
+        host.Services = services.BuildServiceProvider();
+    }
+
+    // other members elided...
+}
+````
+
+Instead of loading feature flag configuration from Azure App Configuration,
+this sample loads configuration from `appsettings.json`.
+In part this is to simplify the custom implementation in this sample
+because there is no version of 
+Microsoft.Extensions.Configuration that is compatible with .NET Framework 4.5.2.
+In part this also helps to exemplify using an alternative and equally valid source
+for configuration data. Multiple sources of configuration can be combined to create fallback
+scenarios when one source isn't available or could be overridden by another source.
+
+## Using feature flags in the WPF application
+
+This section is the punch line of this sample: the XAML and code behind that use this are **_exactly the same_**
+as those in the previous WPF .NET 6 application.
+As in tha previous sample, we use dependency injection to obtain an IFeatureManager in the `MainWindow` constructor,
+use it to set public properties in the data context, and use those to target data binding on the `Visibility` attributes
+of various controls in the XAML.
 
 # References
 

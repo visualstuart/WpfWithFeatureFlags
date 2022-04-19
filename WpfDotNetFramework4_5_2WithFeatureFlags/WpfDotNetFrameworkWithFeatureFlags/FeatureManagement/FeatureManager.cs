@@ -10,12 +10,10 @@ namespace WpfDotNetFrameworkWithFeatureFlags.FeatureManagement
     {
         private const string SectionName = "FeatureManagement";
 
-        private readonly IConfiguration configuration;
         private readonly IConfigurationSection section;
 
         public FeatureManager(IConfiguration configuration)
         {
-            this.configuration = configuration;
             section = configuration.GetSection(SectionName);
         }
 
@@ -35,6 +33,5 @@ namespace WpfDotNetFrameworkWithFeatureFlags.FeatureManagement
 
             return Enum.GetName(featureType, feature);
         }
-
     }
 }
